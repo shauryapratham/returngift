@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Return Gift</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
     margin: 0;
@@ -9,39 +10,135 @@ body {
     text-align: center;
     font-family: Arial;
     color: white;
+    overflow: hidden;
 }
 
+/* Neon Flickering Text */
 .neon {
-    font-size: 50px;
+    font-size: 60px;
     margin-top: 50px;
+    color: #00ffff;
     text-shadow:
         0 0 5px #00ffff,
         0 0 10px #00ffff,
         0 0 20px #00ffff,
         0 0 40px #00ffff;
+    animation: flicker 1.5s infinite alternate;
 }
 
+@keyframes flicker {
+    0% { text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; opacity:1;}
+    50% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; opacity:0.8;}
+    100% { text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; opacity:1;}
+}
+
+/* Image */
 img {
     margin-top: 40px;
     width: 300px;
+    max-width: 80%;
     border-radius: 20px;
-    box-shadow: 0 0 20px #00ffff;
+    box-shadow: 0 0 30px #00ffff;
+}
+
+/* Hearts animation */
+.heart {
+    position: absolute;
+    font-size: 20px;
+    animation: float 5s linear infinite;
+}
+
+@keyframes float {
+    from { transform: translateY(100vh); }
+    to { transform: translateY(-10vh); }
+}
+
+/* Fireworks container */
+.firework {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ff00ff;
+    pointer-events: none;
 }
 </style>
 </head>
-
 <body>
 
 <h1 class="neon">MANSI ❤️</h1>
+<h2>Thank you for always being there 😄</h2>
 
-<h2>Thank You For Always Being There</h2>
-
-<img src="sis.jpeg" alt="us">
+<img src="yourphoto.jpg" alt="Our Image">
 
 <p style="margin-top:30px;">
-Forever grateful for you 😄<br>
-Return Gift: A brother who will always annoy you.
+Forever grateful for you ❤️<br>
+Return Gift: A brother who will always annoy you 😎
 </p>
 
+<!-- Music -->
+<audio id="bgmusic" loop>
+    <source src="giftmusic.mp3" type="audio/mpeg">
+</audio>
+
+<div id="tapHint" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); color:white; font-family:Arial; font-size:18px;">
+Tap anywhere to start music 🎵
+</div>
+
+<script>
+// ===== MUSIC =====
+var music = document.getElementById("bgmusic");
+function startMusic() {
+    music.play().catch(() => {}); // ignore errors
+}
+
+// Try autoplay first
+music.play().then(()=>{}).catch(()=>{
+    // Mobile blocked → show subtle hint
+    document.getElementById("tapHint").style.display = "block";
+    document.body.addEventListener("click", function() {
+        startMusic();
+        document.getElementById("tapHint").style.display = "none";
+    }, {once:true});
+});
+
+// ===== Floating Hearts =====
+function createHeart() {
+    let heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(), 5000);
+}
+setInterval(createHeart, 500);
+
+// ===== Fireworks =====
+function createFirework() {
+    let fwCount = 10 + Math.floor(Math.random()*5);
+    let centerX = Math.random()*window.innerWidth;
+    let centerY = Math.random()*window.innerHeight*0.6;
+
+    for(let i=0; i<fwCount; i++){
+        let fw = document.createElement("div");
+        fw.classList.add("firework");
+        fw.style.background = `hsl(${Math.random()*360},100%,50%)`;
+        fw.style.left = centerX + "px";
+        fw.style.top = centerY + "px";
+        document.body.appendChild(fw);
+
+        let angle = Math.random()*2*Math.PI;
+        let distance = 50 + Math.random()*50;
+        fw.animate([
+            { transform: `translate(0px,0px)`, opacity:1 },
+            { transform: `translate(${Math.cos(angle)*distance}px, ${Math.sin(angle)*distance}px)`, opacity:0 }
+        ], { duration: 1000, easing:"ease-out" });
+
+        setTimeout(()=>fw.remove(), 1000);
+    }
+}
+setInterval(createFirework, 1500);
+
+</script>
 </body>
 </html>
