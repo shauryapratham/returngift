@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Accessing System...</title>
+<title>Secure Access...</title>
 <style>
 body {
     margin: 0;
     background: black;
-    color: #00ff00;
-    font-family: monospace;
     overflow: hidden;
     text-align: center;
+    font-family: monospace;
 }
 
-/* Hacker loading screen */
-#loading {
-    margin-top: 200px;
-    font-size: 20px;
-    animation: blink 1s infinite;
+/* Matrix canvas */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 
-@keyframes blink {
-    50% { opacity: 0.3; }
-}
-
-/* Neon text */
+/* Neon Text */
 .neon {
     font-size: 70px;
-    color: #fff;
+    margin-top: 120px;
+    color: white;
     text-shadow:
         0 0 5px #ff00ff,
         0 0 10px #ff00ff,
         0 0 20px #ff00ff,
         0 0 40px #ff00ff;
     display: none;
-    margin-top: 100px;
 }
 
+/* Message */
+#message {
+    display: none;
+    color: white;
+    font-size: 22px;
+    margin-top: 20px;
+}
+
+/* Button */
 button {
     padding: 15px 25px;
     font-size: 18px;
@@ -44,8 +49,9 @@ button {
     background: #ff00ff;
     color: white;
     cursor: pointer;
-    margin-top: 40px;
+    margin-top: 30px;
     display: none;
+    transition: 0.3s;
 }
 
 button:hover {
@@ -56,22 +62,68 @@ button:hover {
 
 <body>
 
-<div id="loading">
-    Initializing Hack Protocol...<br>
-    Accessing Sister Database...<br>
-    Verifying Identity...
-</div>
+<canvas id="matrix"></canvas>
+
+<h2 id="loading" style="color:#00ff00; margin-top:200px;">
+Initializing Hack Sequence...<br>
+Accessing Sister Database...<br>
+Decrypting Identity...
+</h2>
 
 <h1 class="neon" id="name">MANSI</h1>
-<h2 id="message" style="display:none; color:white;">
-    😂 It's a prank!<br><br>
-    System Confirmed: World's Best Sister ❤️
-</h2>
+
+<div id="message">
+😂 It's a prank!<br><br>
+System Confirmed: World's Best Sister ❤️
+</div>
 
 <button id="giftBtn" onclick="nextPage()">Receive Your Return Gift 🎁</button>
 
+<!-- Background Music -->
+<audio id="bgmusic" autoplay loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
 <script>
-setTimeout(() => {
+// MATRIX EFFECT
+var canvas = document.getElementById("matrix");
+var ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+var letters = "01MANSI";
+letters = letters.split("");
+
+var fontSize = 16;
+var columns = canvas.width / fontSize;
+var drops = [];
+
+for (var x = 0; x < columns; x++)
+    drops[x] = 1;
+
+function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#0F0";
+    ctx.font = fontSize + "px monospace";
+
+    for (var i = 0; i < drops.length; i++) {
+        var text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+            drops[i] = 0;
+
+        drops[i]++;
+    }
+}
+
+setInterval(draw, 33);
+
+// Reveal prank after 4 seconds
+setTimeout(function() {
     document.getElementById("loading").style.display = "none";
     document.getElementById("name").style.display = "block";
     document.getElementById("message").style.display = "block";
@@ -81,7 +133,14 @@ setTimeout(() => {
 function nextPage() {
     window.location.href = "gift.html";
 }
+
+// Fix autoplay block (for some browsers)
+document.body.addEventListener("click", function() {
+    document.getElementById("bgmusic").play();
+});
 </script>
 
+</body>
+</html>
 </body>
 </html>
