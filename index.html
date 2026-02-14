@@ -85,25 +85,34 @@ System Confirmed: World's Best Sister ❤️
 </audio>
 
 <script>
-// MATRIX EFFECT
 var canvas = document.getElementById("matrix");
 var ctx = canvas.getContext("2d");
 
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
 var letters = "01MANSI";
 letters = letters.split("");
 
-var fontSize = 16;
-var columns = canvas.width / fontSize;
-var drops = [];
+var fontSize = 14;
+var columns;
+var drops;
 
-for (var x = 0; x < columns; x++)
-    drops[x] = 1;
+function initMatrix() {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = [];
+    for (var i = 0; i < columns; i++) {
+        drops[i] = 1;
+    }
+}
+initMatrix();
 
 function draw() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = "#0F0";
@@ -113,15 +122,14 @@ function draw() {
         var text = letters[Math.floor(Math.random() * letters.length)];
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
-
+        }
         drops[i]++;
     }
 }
 
-setInterval(draw, 33);
-
+setInterval(draw, 40);
 // Reveal prank after 4 seconds
 setTimeout(function() {
     document.getElementById("loading").style.display = "none";
