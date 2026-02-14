@@ -4,16 +4,23 @@
 <title>Return Gift</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+/* Animated background gradient */
 body {
     margin: 0;
-    background: linear-gradient(135deg, #000000, #1a001a);
+    overflow: hidden;
     text-align: center;
     font-family: Arial;
     color: white;
-    overflow: hidden;
+    animation: bgGradient 15s ease infinite alternate;
 }
 
-/* Neon Flickering Text */
+@keyframes bgGradient {
+    0% { background: linear-gradient(135deg, #6a0dad, #0000ff); }
+    50% { background: linear-gradient(135deg, #ff69b4, #6a0dad); }
+    100% { background: linear-gradient(135deg, #0000ff, #ff69b4); }
+}
+
+/* Neon flicker text */
 .neon {
     font-size: 60px;
     margin-top: 50px;
@@ -25,11 +32,10 @@ body {
         0 0 40px #00ffff;
     animation: flicker 1.5s infinite alternate;
 }
-
 @keyframes flicker {
-    0% { text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; opacity:1;}
-    50% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; opacity:0.8;}
-    100% { text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; opacity:1;}
+    0% { text-shadow: 0 0 5px #00ffff,0 0 10px #00ffff; opacity:1; }
+    50% { text-shadow: 0 0 20px #00ffff,0 0 40px #00ffff; opacity:0.8; }
+    100% { text-shadow: 0 0 5px #00ffff,0 0 10px #00ffff; opacity:1; }
 }
 
 /* Image */
@@ -41,68 +47,111 @@ img {
     box-shadow: 0 0 30px #00ffff;
 }
 
-/* Hearts animation */
+/* Typing effect */
+#typedMsg {
+    font-size: 22px;
+    margin-top: 20px;
+    white-space: pre-wrap;
+}
+
+/* Floating hearts */
 .heart {
     position: absolute;
     font-size: 20px;
     animation: float 5s linear infinite;
 }
-
 @keyframes float {
     from { transform: translateY(100vh); }
     to { transform: translateY(-10vh); }
 }
 
-/* Fireworks container */
+/* Fireworks particles */
 .firework {
     position: absolute;
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #ff00ff;
     pointer-events: none;
+}
+
+/* Confetti */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: hsl(var(--hue), 100%, 50%);
+    top: -10px;
+    animation: confettiFall 3s linear forwards;
+}
+@keyframes confettiFall {
+    0% { transform: translateY(0px) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); opacity:0; }
 }
 </style>
 </head>
 <body>
 
 <h1 class="neon">MANSI ❤️</h1>
-<h2>Thank you for always being there 😄</h2>
+<div id="typedMsg"></div>
 
 <img src="sis.jpeg" alt="Our Image">
 
 <p style="margin-top:30px;">
-Forever grateful for you ❤️<br>
 Return Gift: A brother who will always annoy you 😎
 </p>
 
 <!-- Music -->
 <audio id="bgmusic" loop>
-    <source src="arabiancat.mpeg" type="audio/mpeg">
+  <source src="arabiancat.mpeg" type="audio/mpeg">
 </audio>
 
-<div id="tapHint" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); color:white; font-family:Arial; font-size:18px;">
-Tap anywhere to start music 🎵
-</div>
+<!-- Sound effects -->
+<audio id="confettiSound">
+  <source src="confetti.mp3" type="audio/mpeg">
+</audio>
+<audio id="fireworkSound">
+  <source src="firework.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 // ===== MUSIC =====
 var music = document.getElementById("bgmusic");
-function startMusic() {
-    music.play().catch(() => {}); // ignore errors
-}
+music.play().catch(()=>{
+    // Mobile blocked → show subtle tap hint
+    let hint = document.createElement("div");
+    hint.innerHTML = "Tap anywhere to start music 🎵";
+    hint.style.position = "fixed";
+    hint.style.top = "20px";
+    hint.style.left = "50%";
+    hint.style.transform = "translateX(-50%)";
+    hint.style.color = "white";
+    hint.style.fontFamily = "Arial";
+    hint.style.fontSize = "18px";
+    document.body.appendChild(hint);
 
-// Try autoplay first
-music.play().then(()=>{}).catch(()=>{
-    // Mobile blocked → show subtle hint
-    document.getElementById("tapHint").style.display = "block";
-    document.body.addEventListener("click", function() {
-        startMusic();
-        document.getElementById("tapHint").style.display = "none";
+    document.body.addEventListener("click", function(){
+        music.play();
+        hint.remove();
     }, {once:true});
 });
 
-// ===== Floating Hearts =====
+// ===== Typing effect =====
+let message = "Thank you for always being there 😄\nForever grateful for you ❤️";
+let typed = "";
+let i = 0;
+let typedMsg = document.getElementById("typedMsg");
+
+function type() {
+    if (i < message.length) {
+        typed += message[i];
+        typedMsg.innerText = typed;
+        i++;
+        setTimeout(type, 50);
+    }
+}
+setTimeout(type, 1000);
+
+// ===== Floating hearts =====
 function createHeart() {
     let heart = document.createElement("div");
     heart.classList.add("heart");
@@ -136,9 +185,27 @@ function createFirework() {
 
         setTimeout(()=>fw.remove(), 1000);
     }
-}
-setInterval(createFirework, 1500);
 
+    // Play firework sound
+    document.getElementById("fireworkSound").play();
+}
+setInterval(createFirework, 2000);
+
+// ===== Confetti burst on page load =====
+function createConfetti() {
+    for(let i=0; i<50; i++){
+        let c = document.createElement("div");
+        c.classList.add("confetti");
+        c.style.setProperty("--hue", Math.random()*360);
+        c.style.left = Math.random()*100 + "vw";
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(), 3000);
+    }
+    // play confetti sound
+    document.getElementById("confettiSound").play();
+}
+window.addEventListener("load", createConfetti);
 </script>
+
 </body>
 </html>
