@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Accessing System...</title>
+<style>
+body {
+    margin: 0;
+    background: black;
+    color: #00ff00;
+    font-family: monospace;
+    overflow: hidden;
+    text-align: center;
+}
+
+/* Hacker loading screen */
+#loading {
+    margin-top: 200px;
+    font-size: 20px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.3; }
+}
+
+/* Neon text */
+.neon {
+    font-size: 70px;
+    color: #fff;
+    text-shadow:
+        0 0 5px #ff00ff,
+        0 0 10px #ff00ff,
+        0 0 20px #ff00ff,
+        0 0 40px #ff00ff;
+    display: none;
+    margin-top: 100px;
+}
+
+button {
+    padding: 15px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    background: #ff00ff;
+    color: white;
+    cursor: pointer;
+    margin-top: 40px;
+    display: none;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+</style>
+</head>
+
+<body>
+
+<div id="loading">
+    Initializing Hack Protocol...<br>
+    Accessing Sister Database...<br>
+    Verifying Identity...
+</div>
+
+<h1 class="neon" id="name">MANSI</h1>
+<h2 id="message" style="display:none; color:white;">
+    😂 It's a prank!<br><br>
+    System Confirmed: World's Best Sister ❤️
+</h2>
+
+<button id="giftBtn" onclick="nextPage()">Receive Your Return Gift 🎁</button>
+
+<script>
+setTimeout(() => {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("name").style.display = "block";
+    document.getElementById("message").style.display = "block";
+    document.getElementById("giftBtn").style.display = "inline-block";
+}, 4000);
+
+function nextPage() {
+    window.location.href = "gift.html";
+}
+</script>
+
+</body>
+</html>
